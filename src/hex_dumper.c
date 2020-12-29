@@ -2,6 +2,8 @@
 
 void DumpFile(FILE* fp, const char* file_path) {
     if (fp) {
+        h_console = GetStdHandle(STD_OUTPUT_HANDLE);
+
         printf("File name: %s\n", file_path);
         LoopThroughFile(fp);
 
@@ -40,7 +42,9 @@ int GetNextBuffer(FILE* fp, char* buffer) {
 }
 
 void PrintBufferAddress(FILE* fp) {
+    SetConsoleTextAttribute(h_console, ADDRESS_COLOR_ATTRIB);
     printf("0x%08X ", ftell(fp));
+    SetConsoleTextAttribute(h_console, RESET_COLOR_ATTRIB);
 }
 
 void FillEmptyHexValues(int bytes_read, char* buffer) {
@@ -54,6 +58,7 @@ void FillEmptyHexValues(int bytes_read, char* buffer) {
 }
 
 void PrintContentsInText(int bytes_read, char* buffer) {
+    SetConsoleTextAttribute(h_console, ASCII_COLOR_ATTRIB);
     for(int i = 0; i < bytes_read; i++){
         if(i == BUFFER_SIZE / 2) {
             printf(" ");
@@ -67,4 +72,6 @@ void PrintContentsInText(int bytes_read, char* buffer) {
         
         buffer[i] = ' ';
     }
+
+    SetConsoleTextAttribute(h_console, RESET_COLOR_ATTRIB);
 }
