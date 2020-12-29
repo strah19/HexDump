@@ -1,4 +1,4 @@
-#include "..\include\hexa_dumper.h"
+#include "..\include\hex_dumper.h"
 
 void DumpFile(FILE* fp, const char* file_path) {
     if (fp) {

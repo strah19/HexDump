@@ -15,7 +15,7 @@ else
 	LINKER_FLAGS = -lm
 endif
 
-OBJ_NAME = HexaDump
+OBJ_NAME = HexDump
 
 all : $(OBJS)
 	$(CC) $(OBJS) $(INCLUDE_PATHS) $(LIBRARY_PATHS) $(COMPILER_FLAGS) $(LINKER_FLAGS) -o $(OBJ_NAME)

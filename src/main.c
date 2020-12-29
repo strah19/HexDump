@@ -1,4 +1,4 @@
-#include "../include/hexa_dumper.h"
+#include "../include/hex_dumper.h"
 
 int main(int argc, char **argv) {
     char* file_path;
