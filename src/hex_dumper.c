@@ -6,8 +6,6 @@ void DumpFile(FILE* fp, const char* file_path) {
 
         printf("File name: %s\n", file_path);
         LoopThroughFile(fp);
-
-        fclose(fp);
     }
     else {
         printf("Could not open file: %s\n", file_path);
