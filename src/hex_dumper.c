@@ -1,67 +1,99 @@
+/**
+ * @file hex_dumper.c
+ * @author strah19
+ * @date June 20 2024
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the MIT License as
+ * published by the Free Software Foundation.
+ *
+ * @section DESCRIPTION
+ *
+ * This file contains the code for all the hex dumping, including
+ * opening file, reading, and displaying.
+ */
+
 #include "..\include\hex_dumper.h"
 
-void DumpFile(FILE* fp, const char* file_path) {
+void dump_file(FILE* fp, const char* file_path) {
     if (fp) {
-        h_console = GetStdHandle(STD_OUTPUT_HANDLE);
+        printf("file name: '%s'.\n", file_path);
 
-        printf("File name: %s\n", file_path);
-        LoopThroughFile(fp);
+        loop_file(fp);
     }
     else {
-        printf("Could not open file: %s\n", file_path);
+        printf("could not open file: '%s'.\n", file_path);
     }
 }
 
-void LoopThroughFile(FILE* fp) {
+void loop_file(FILE* fp) {
+    bool same = true;
+    bool star_printed = false;
+
     unsigned char buffer[BUFFER_SIZE];
+    memset(buffer, 0, BUFFER_SIZE);
+
+    unsigned char previous_buffer[BUFFER_SIZE];
+    memset(previous_buffer, 0, BUFFER_SIZE);
+
+    size_t bytes_read = get_buffer(fp, buffer);
+    print_line(bytes_read, buffer, fp);
+
     while(!feof(fp)) {
-        size_t bytes_read = GetNextBuffer(fp, buffer);
-
-        PrintBufferAddress(fp);
-        
-        for(int i = 0; i < bytes_read; i++){
-            if(i == BUFFER_SIZE / 2)
-                printf(" | ");
-            printf(" %02X ", buffer[i]);
+        bytes_read = get_buffer(fp, buffer);
+        if (bytes_read == 0)
+            break;
+ 
+        same = true;
+        for (int i = 0; i < bytes_read; i++) {
+            if (previous_buffer[i] != buffer[i]) {
+                same = false;
+            }
+            previous_buffer[i] = buffer[i];
         }
 
-        FillEmptyHexValues(bytes_read, buffer);
-
-        printf(" ");
-
-        PrintContentsInText(bytes_read, buffer);
-
-        printf("\n");
+        if (!same) {
+            print_line(bytes_read, buffer, fp);
+            star_printed = false;
+        }
+        else if (same && !star_printed) {
+            printf("*\n");
+            star_printed = true;
+        }
     }
 }
 
-int GetNextBuffer(FILE* fp, char* buffer) {
-    return (fread(buffer, sizeof(unsigned char), BUFFER_SIZE, fp));
-}
-
-void PrintBufferAddress(FILE* fp) {
-    SetConsoleTextAttribute(h_console, ADDRESS_COLOR_ATTRIB);
-    printf("0x%08X ", ftell(fp));
-    SetConsoleTextAttribute(h_console, RESET_COLOR_ATTRIB);
-}
-
-void FillEmptyHexValues(int bytes_read, char* buffer) {
-    for(int i = 0; i < BUFFER_SIZE - bytes_read; i++){
-        if(bytes_read + i == BUFFER_SIZE / 2) {
+void print_line(size_t bytes_read, unsigned char* buffer, FILE* fp) {
+    print_address(fp);
+    
+    for(int i = 0; i < bytes_read; i++){
+        if(i == BUFFER_SIZE / 2)
             printf(" | ");
-        }
-
-        printf(" ** ");
+        printf(" %02X ", buffer[i]);
     }
+
+    fill_empty(bytes_read, buffer);
+
+    printf(" ");
+
+    print_text(bytes_read, buffer);
+
+    printf("\n");
 }
 
-void PrintContentsInText(int bytes_read, char* buffer) {
-    SetConsoleTextAttribute(h_console, ASCII_COLOR_ATTRIB);
+void print_address(FILE* fp) {
+    printf("0x%08X ", ftell(fp));
+}
+
+void print_text(int bytes_read, char* buffer) {
     for(int i = 0; i < bytes_read; i++){
         if(i == BUFFER_SIZE / 2) {
             printf(" ");
         }
-        if(buffer[i] <= 0xFE && buffer[i] >= 22) {
+        if(buffer[i] <= 0xFE && buffer[i] >= 0x20) {
             printf("%c", buffer[i]);
         }
         else {
@@ -70,6 +102,18 @@ void PrintContentsInText(int bytes_read, char* buffer) {
         
         buffer[i] = ' ';
     }
+}
 
-    SetConsoleTextAttribute(h_console, RESET_COLOR_ATTRIB);
+int get_buffer(FILE* fp, char* buffer) {
+    return (fread(buffer, sizeof(unsigned char), BUFFER_SIZE, fp));
+}
+
+void fill_empty(int bytes_read, char* buffer) {
+    for(int i = 0; i < BUFFER_SIZE - bytes_read; i++){
+        if(bytes_read + i == BUFFER_SIZE / 2) {
+            printf(" | ");
+        }
+
+        printf(" ** ");
+    }
 }

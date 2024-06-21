@@ -2,26 +2,21 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
-#include <windows.h>
 
 #define BUFFER_SIZE 16
 #define LOWEST_ASCII_POINT 22
 #define HIGHEST_ASCII_POINT 0x7E
 
-#define RESET_COLOR_ATTRIB 7
-#define ADDRESS_COLOR_ATTRIB 2
-#define ASCII_COLOR_ATTRIB 4
+extern void dump_file(FILE* fp, const char* file_path);
 
-static HANDLE h_console;
+static void loop_file(FILE* fp);
 
-extern void DumpFile(FILE* fp, const char* file_path);
+static void print_line(size_t bytes_read, unsigned char* buffer, FILE* fp);
 
-static void LoopThroughFile(FILE* fp);
+static void print_address(FILE* fp);
 
-static int GetNextBuffer(FILE* fp, char* buffer);
+static void print_text(int bytes_read, char* buffer);
 
-static void PrintBufferAddress(FILE* fp);
+static int get_buffer(FILE* fp, char* buffer);
 
-static void FillEmptyHexValues(int bytes_read, char* buffer);
-
-static void PrintContentsInText(int bytes_read, char* buffer);
+static void fill_empty(int bytes_read, char* buffer);

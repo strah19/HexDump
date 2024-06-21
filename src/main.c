@@ -1,3 +1,20 @@
+/**
+ * @file main.c
+ * @author strah19
+ * @date June 20 2024
+ * @version 1.0
+ *
+ * @section LICENSE
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the MIT License as
+ * published by the Free Software Foundation.
+ *
+ * @section DESCRIPTION
+ *
+ * This file contains the entry point for the hexdump application.
+ */
+
 #include "../include/hex_dumper.h"
 
 int main(int argc, char **argv) {
@@ -10,7 +27,7 @@ int main(int argc, char **argv) {
     }
     else {
         fp = fopen(argv[1], "rb");
-        DumpFile(fp, argv[1]);
+        dump_file(fp, argv[1]);
     }
 
     fclose(fp);
