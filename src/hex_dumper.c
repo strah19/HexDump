@@ -39,8 +39,8 @@ void loop_file(FILE* fp) {
     unsigned char previous_buffer[BUFFER_SIZE];
     memset(previous_buffer, 0, BUFFER_SIZE);
 
-    size_t bytes_read = get_buffer(fp, buffer);
-    print_line(bytes_read, buffer, fp);
+    size_t bytes_read = get_buffer(fp, previous_buffer);
+    print_line(bytes_read, previous_buffer, fp);
 
     while(!feof(fp)) {
         bytes_read = get_buffer(fp, buffer);
@@ -49,13 +49,12 @@ void loop_file(FILE* fp) {
  
         same = true;
         for (int i = 0; i < bytes_read; i++) {
-            if (previous_buffer[i] != buffer[i]) {
+            if (previous_buffer[i] != buffer[i]) 
                 same = false;
-            }
             previous_buffer[i] = buffer[i];
         }
 
-        if (!same) {
+        if (!same || feof(fp)) {
             print_line(bytes_read, buffer, fp);
             star_printed = false;
         }
@@ -98,9 +97,7 @@ void print_text(int bytes_read, char* buffer) {
         }
         else {
             printf(".");
-        }
-        
-        buffer[i] = ' ';
+        }        
     }
 }
 
