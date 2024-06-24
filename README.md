@@ -6,7 +6,7 @@ This is a command line hex dump for visualizing files in hexadecimal and ASCII c
 
 Usage is very simple with a single command `hexdump` that only requires a file path. For example: `hexdump doc.txt`.
 
-It is encouraged to add the `bin/` path to your environmental path for use across your system. 
+Adding the executable to your environmental path for use across your system is encouraged. 
 
 ### Example Output
 
