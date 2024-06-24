@@ -36,3 +36,8 @@ It is encouraged to add the `bin/` path to your environmental path for use acros
 </pre>
 
 The `*` implies that the line directly above it is repeated untill the following lines data is different.
+
+### Compile Source
+
+Currently the only binary release is for windows (.exe). However, this project can be compiled from source
+using cmake for specific build systems and operating systems.
